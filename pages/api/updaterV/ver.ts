@@ -19,19 +19,19 @@ export default async function handle(
       platforms: {
         "darwin-x86_64": {
           signature: "",
-          url: "https://github.com/lemarier/tauri-test/releases/download/v1.0.0/app.app.tar.gz",
+          url: "https://github.com/G9000/tauri-test/releases/download/main/tauri-vite-updater.app.tar.gz",
         },
         "darwin-aarch64": {
           signature: "",
-          url: "https://github.com/lemarier/tauri-test/releases/download/v1.0.0/silicon/app.app.tar.gz",
+          url: "https://github.com/G9000/tauri-test/releases/download/main/tauri-vite-updater.app.tar.gz",
         },
         "linux-x86_64": {
           signature: "",
-          url: "https://github.com/lemarier/tauri-test/releases/download/v1.0.0/app.AppImage.tar.gz",
+          url: "https://github.com/G9000/tauri-test/releases/download/main/tauri-vite-updater.app.tar.gz",
         },
         "windows-x86_64": {
           signature: "",
-          url: "https://github.com/lemarier/tauri-test/releases/download/v1.0.0/app.x64.msi.zip",
+          url: "https://github.com/G9000/tauri-test/releases/download/main/tauri-vite-updater.app.tar.gz",
         },
       },
     },
