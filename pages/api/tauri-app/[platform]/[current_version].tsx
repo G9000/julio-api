@@ -115,7 +115,7 @@ export default async function TauriTestAppApi(
         curPatch === latestPatch
       ) {
         console.log("UP TO DATE SAME AS LATEST VERSION");
-        return;
+        throw new Error();
       }
     } else {
       throw new Error("version is not a string");
