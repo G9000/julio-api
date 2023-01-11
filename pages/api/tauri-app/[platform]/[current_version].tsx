@@ -70,15 +70,14 @@ async function getLatestGithubRelease(repo: string): Promise<Release> {
 
 async function TestAppApiFetch(
   req: NextApiRequest,
-  res: NextApiResponse<Release>
-): Promise<any> {
+  res: NextApiResponse<Release | string>
+): Promise<void> {
   const params = req.query;
   const { current_version } = params;
   const latestRelease = await getLatestGithubRelease(App_Repo);
 
   if (!latestRelease || !current_version) {
-    res.status(204).end();
-    return;
+    return res.status(204).send("NO CONTENT");
   }
 
   try {
@@ -100,16 +99,15 @@ async function TestAppApiFetch(
         curMin === latestMin &&
         curPatch === latestPatch
       ) {
-        throw new Error();
+        return;
       }
     } else {
       throw new Error("version is not a string");
     }
   } catch (e) {
-    res.status(204).end();
-    return;
+    return res.status(204).send("NO CONTENT");
   }
-  return latestRelease;
+  return res.json(latestRelease);
 }
 
 export default async function TestAppApi(
@@ -118,13 +116,11 @@ export default async function TestAppApi(
 ) {
   const data = myCache.get("data");
   if (data) {
-    console.log("data", data);
-    return res.json(data);
+    return data;
   } else {
     // perform expensive operation to get data
     const newData = await TestAppApiFetch(req, res);
-    console.log("newData", newData);
     myCache.set("data", newData);
-    return res.json(newData);
+    return newData;
   }
 }
