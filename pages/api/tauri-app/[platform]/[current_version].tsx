@@ -114,6 +114,7 @@ export default async function TauriTestAppApi(
         curMin === latestMin &&
         curPatch === latestPatch
       ) {
+        console.log("UP TO DATE SAME AS LATEST VERSION");
         return;
       }
     } else {
