@@ -57,7 +57,7 @@ async function getLatestGithubRelease(repo: string): Promise<Release> {
           name.endsWith(`${extension}.sig`)
         );
         if (sigAsset) {
-          const response = await fetch(sigAsset.browser_download_url);
+          const response = await fetch(urlAsset["browser_download_url"]);
           const sig = await response.text();
           releaseResponse.platforms[platform] = {
             ...releaseResponse.platforms[platform],
