@@ -41,27 +41,32 @@ async function getLatestGithubRelease(repo: string): Promise<Release> {
       platforms: {},
     };
 
-    for (const asset of release.assets || []) {
-      for (const [for_platforms, extension] of PLATFORMS) {
-        if (asset.name.endsWith(extension)) {
-          for (const platform of for_platforms) {
-            releaseResponse.platforms[platform] = {
-              ...releaseResponse.platforms[platform],
-              url: asset.browser_download_url,
-            };
-          }
-        } else if (asset.name.endsWith(`${extension}.sig`)) {
-          const response = await fetch(asset["browser_download_url"]);
-          const sig = await response.text();
-          for (const platform of for_platforms) {
-            releaseResponse.platforms[platform] = {
-              ...releaseResponse.platforms[platform],
-              signature: sig,
-            };
-          }
+    PLATFORMS.forEach(([forPlatforms, extension]) => {
+      forPlatforms.forEach(async (platform) => {
+        const urlAsset = release.assets.find(({ name }: { name: string }) =>
+          name.endsWith(extension)
+        );
+        if (urlAsset) {
+          releaseResponse.platforms[platform] = {
+            ...releaseResponse.platforms[platform],
+            url: urlAsset.browser_download_url,
+          };
         }
-      }
-    }
+
+        const sigAsset = release.assets.find(({ name }: { name: string }) =>
+          name.endsWith(`${extension}.sig`)
+        );
+        if (sigAsset) {
+          const response = await fetch(sigAsset.browser_download_url);
+          const sig = await response.text();
+          releaseResponse.platforms[platform] = {
+            ...releaseResponse.platforms[platform],
+            signature: sig,
+          };
+        }
+      });
+    });
+
     return releaseResponse;
   } catch (error) {
     return {} as Release;
