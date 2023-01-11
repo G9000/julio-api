@@ -13,7 +13,7 @@ const myCache = new NodeCache({ stdTTL: 300 }); // every 5 minutes
 
 const PLATFORMS: Array<[Array<string>, string]> = [
   [["linux-x86_64"], "amd64.AppImage.tar.gz"], // linux
-  [["darwin-x86_64", "darwin-aarch64"], "app.tar.gz"], // apple intel & apple silicone
+  [["darwin-x86_64", "darwin-aarch64"], "app.tar.gz"], // apple intel & apple silicon
   [["windows-x86_64"], "x64_en-US.msi.zip"], // windows
 ];
 
@@ -71,7 +71,7 @@ async function getLatestGithubRelease(repo: string): Promise<Release> {
 async function TestAppApiFetch(
   req: NextApiRequest,
   res: NextApiResponse<Release>
-): Promise<void> {
+): Promise<any> {
   const params = req.query;
   const { current_version } = params;
   const latestRelease = await getLatestGithubRelease(App_Repo);
@@ -109,7 +109,7 @@ async function TestAppApiFetch(
     res.status(204).end();
     return;
   }
-  return res.json(latestRelease);
+  return latestRelease;
 }
 
 export default async function TestAppApi(
@@ -118,10 +118,12 @@ export default async function TestAppApi(
 ) {
   const data = myCache.get("data");
   if (data) {
+    console.log("data", data);
     return res.json(data);
   } else {
     // perform expensive operation to get data
     const newData = await TestAppApiFetch(req, res);
+    console.log("newData", newData);
     myCache.set("data", newData);
     return res.json(newData);
   }
