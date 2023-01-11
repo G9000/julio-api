@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-const NodeCache = require("node-cache");
+import NodeCache from "node-cache";
 import Cors from "cors";
 // import { runMiddleware } from "../../../../utils/middleware";
 
