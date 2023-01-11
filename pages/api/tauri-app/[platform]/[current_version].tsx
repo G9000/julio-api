@@ -41,29 +41,52 @@ async function getLatestGithubRelease(repo: string): Promise<Release> {
       platforms: {},
     };
 
-    PLATFORMS.forEach(([forPlatforms, extension]) => {
-      forPlatforms.forEach(async (platform) => {
-        const urlAsset = release.assets.find(({ name }: { name: string }) =>
-          name.endsWith(extension)
-        );
-        if (urlAsset) {
+    for (const asset of release.assets || []) {
+      for (const [for_platforms, extension] of PLATFORMS) {
+        if (asset.name.endsWith(extension)) {
+          for (const platform of for_platforms) {
+            releaseResponse.platforms[platform] = {
+              ...releaseResponse.platforms[platform],
+              url: asset.browser_download_url,
+            };
+          }
+        } else if (asset.name.endsWith(`${extension}.sig`)) {
+          const response = await fetch(asset["browser_download_url"]);
+          const sig = await response.text();
+          for (const platform of for_platforms) {
+            releaseResponse.platforms[platform] = {
+              ...releaseResponse.platforms[platform],
+              signature: sig,
+            };
+          }
+        }
+      }
+    }
+
+    PLATFORMS.forEach(([for_platforms, extension]) => {
+      const urlAssets = (release.assets || []).filter((asset: any) =>
+        asset.name.endsWith(extension)
+      );
+      urlAssets.forEach((asset: any) => {
+        for_platforms.forEach((platform) => {
           releaseResponse.platforms[platform] = {
             ...releaseResponse.platforms[platform],
-            url: urlAsset.browser_download_url,
+            url: asset.browser_download_url,
           };
-        }
-
-        const sigAsset = release.assets.find(({ name }: { name: string }) =>
-          name.endsWith(`${extension}.sig`)
-        );
-        if (sigAsset) {
-          const response = await fetch(urlAsset["browser_download_url"]);
-          const sig = await response.text();
+        });
+      });
+      const sigAssets = (release.assets || []).filter((asset: any) =>
+        asset.name.endsWith(`${extension}.sig`)
+      );
+      sigAssets.forEach(async (asset: any) => {
+        const response = await fetch(asset["browser_download_url"]);
+        const sig = await response.text();
+        for_platforms.forEach((platform) => {
           releaseResponse.platforms[platform] = {
             ...releaseResponse.platforms[platform],
             signature: sig,
           };
-        }
+        });
       });
     });
 
