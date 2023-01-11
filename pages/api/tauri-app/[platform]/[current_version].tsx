@@ -68,13 +68,28 @@ async function getLatestGithubRelease(repo: string): Promise<Release> {
   }
 }
 
-async function TestAppApiFetch(
+// Caching
+async function TestAppApiFetch(repo: string): Promise<Release> {
+  const data = myCache.get("data");
+  if (data) {
+    console.log("oldData", data);
+    return data as Release;
+  } else {
+    // perform expensive operation to get data
+    const newData = await getLatestGithubRelease(repo);
+    myCache.set("data", newData);
+    console.log("newData", newData);
+    return newData;
+  }
+}
+
+export default async function TauriTestAppApi(
   req: NextApiRequest,
   res: NextApiResponse<Release | string>
 ): Promise<void> {
   const params = req.query;
   const { current_version } = params;
-  const latestRelease = await getLatestGithubRelease(App_Repo);
+  const latestRelease = await TestAppApiFetch(App_Repo); // Get latest releases
 
   if (!latestRelease || !current_version) {
     return res.status(204).send("NO CONTENT");
@@ -108,19 +123,4 @@ async function TestAppApiFetch(
     return res.status(204).send("NO CONTENT");
   }
   return res.json(latestRelease);
-}
-
-export default async function TestAppApi(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const data = myCache.get("data");
-  if (data) {
-    return data;
-  } else {
-    // perform expensive operation to get data
-    const newData = await TestAppApiFetch(req, res);
-    myCache.set("data", newData);
-    return newData;
-  }
 }
