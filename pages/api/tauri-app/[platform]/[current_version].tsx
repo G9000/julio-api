@@ -12,15 +12,13 @@ export const cors = Cors({
 // repo url
 const App_Repo = "G9000/tauri-test";
 
-
 export default async function TauriTestAppApi(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ): Promise<any> {
   // const params = req.query;
   // const { current_version } = params;
-  const latestRelease = await getGhReleases({ repo: App_Repo, caching: true })); // Get latest releases
-  console.log('latestRelease', latestRelease)
-  return latestRelease
-  
+  const latestRelease = await getGhReleases({ repo: App_Repo, caching: true }); // Get latest releases
+  console.log("latestRelease", latestRelease);
+  return latestRelease;
 }
