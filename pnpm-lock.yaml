@@ -14,6 +14,10 @@ specifiers:
   node-cache: ^5.1.2
   react: 18.2.0
   react-dom: 18.2.0
+  tauri-gh-releases-generator: ^1.0.0
+  tauri-gh-releases-utilities: ^1.0.0
+  tauri-gh-releases-utils: ^1.0.0
+  tauri-github-releases-test: ^1.0.0
   typescript: 4.9.4
 
 dependencies:
@@ -28,6 +32,10 @@ dependencies:
   node-cache: 5.1.2
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  tauri-gh-releases-generator: 1.0.0
+  tauri-gh-releases-utilities: 1.0.0
+  tauri-gh-releases-utils: 1.0.0
+  tauri-github-releases-test: 1.0.0
   typescript: 4.9.4
 
 devDependencies:
@@ -2039,6 +2047,30 @@ packages:
   /tapable/2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
+    dev: false
+
+  /tauri-gh-releases-generator/1.0.0:
+    resolution: {integrity: sha512-NAysSWETZ9MDLaRIz1xvJx+oCeSyWUErgfuvfg98Zw1QpH4AdJv8F8VkZhnVpc3ndNwm3qRpXD9jIBnceL/KRA==}
+    dependencies:
+      node-cache: 5.1.2
+    dev: false
+
+  /tauri-gh-releases-utilities/1.0.0:
+    resolution: {integrity: sha512-9D9ByFKG55EAPZBDEUK4Ar64jo0DBCptH/Ndr5bHaOCcUMcscx9tyjpjvqFQfywyLifccO3fPaTnpcNYIGNk1A==}
+    dependencies:
+      node-cache: 5.1.2
+    dev: false
+
+  /tauri-gh-releases-utils/1.0.0:
+    resolution: {integrity: sha512-Mr0bbaHwSIcxLFDNQhbLvq+Zre5gN2kYGRjz+Mn5fmP4d/RjL8JTb7HtIJNgPPaUc4KQ0c5o0/b3jrBXmMEcSA==}
+    dependencies:
+      node-cache: 5.1.2
+    dev: false
+
+  /tauri-github-releases-test/1.0.0:
+    resolution: {integrity: sha512-qA4KBfKJAVFMyVfWKiSzgkVP8RZYFZYAQDJp9n+NT+nR1Iy7dTQUPymQKko3tAmjFQEI0kuOZwmNHnNj6ZkJgg==}
+    dependencies:
+      node-cache: 5.1.2
     dev: false
 
   /text-table/0.2.0:

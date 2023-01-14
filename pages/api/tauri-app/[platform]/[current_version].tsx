@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import NodeCache from "node-cache";
 import Cors from "cors";
+import { getGhReleases } from "tauri-github-releases-test";
+
 // import { runMiddleware } from "../../../../utils/middleware";
 
 export const cors = Cors({
@@ -9,147 +11,16 @@ export const cors = Cors({
 
 // repo url
 const App_Repo = "G9000/tauri-test";
-const myCache = new NodeCache({ stdTTL: 300 }); // every 5 minutes
 
-const PLATFORMS: Array<[Array<string>, string]> = [
-  [["linux-x86_64"], "amd64.AppImage.tar.gz"], // linux
-  [["darwin-x86_64", "darwin-aarch64"], "app.tar.gz"], // apple intel & apple silicon
-  [["windows-x86_64"], "x64_en-US.msi.zip"], // windows
-];
-
-interface Release {
-  version: string;
-  notes: string;
-  pub_date: string;
-  platforms: { [key: string]: { url: string; signature?: string } };
-}
-
-// get the latest release for the app
-async function getLatestGithubRelease(repo: string): Promise<Release> {
-  const githubLatestReleaseUrl = `https://api.github.com/repos/${repo}/releases/latest`;
-
-  try {
-    const response = await fetch(githubLatestReleaseUrl);
-    const release = await response.json();
-
-    const releaseResponse: Release = {
-      version: release.tag_name,
-      notes: release.body
-        .replace(/See the assets to download this version and install./, "")
-        .trim(),
-      pub_date: release.published_at,
-      platforms: {},
-    };
-
-    for (const asset of release.assets || []) {
-      for (const [for_platforms, extension] of PLATFORMS) {
-        if (asset.name.endsWith(extension)) {
-          for (const platform of for_platforms) {
-            releaseResponse.platforms[platform] = {
-              ...releaseResponse.platforms[platform],
-              url: asset.browser_download_url,
-            };
-          }
-        } else if (asset.name.endsWith(`${extension}.sig`)) {
-          const response = await fetch(asset["browser_download_url"]);
-          const sig = await response.text();
-          for (const platform of for_platforms) {
-            releaseResponse.platforms[platform] = {
-              ...releaseResponse.platforms[platform],
-              signature: sig,
-            };
-          }
-        }
-      }
-    }
-
-    PLATFORMS.forEach(([for_platforms, extension]) => {
-      const urlAssets = (release.assets || []).filter((asset: any) =>
-        asset.name.endsWith(extension)
-      );
-      urlAssets.forEach((asset: any) => {
-        for_platforms.forEach((platform) => {
-          releaseResponse.platforms[platform] = {
-            ...releaseResponse.platforms[platform],
-            url: asset.browser_download_url,
-          };
-        });
-      });
-      const sigAssets = (release.assets || []).filter((asset: any) =>
-        asset.name.endsWith(`${extension}.sig`)
-      );
-      sigAssets.forEach(async (asset: any) => {
-        const response = await fetch(asset["browser_download_url"]);
-        const sig = await response.text();
-        for_platforms.forEach((platform) => {
-          releaseResponse.platforms[platform] = {
-            ...releaseResponse.platforms[platform],
-            signature: sig,
-          };
-        });
-      });
-    });
-
-    return releaseResponse;
-  } catch (error) {
-    return {} as Release;
-  }
-}
-
-// Caching
-async function TestAppApiFetch(repo: string): Promise<Release> {
-  const data = myCache.get("data");
-  if (data) {
-    console.log("oldData", data);
-    return data as Release;
-  } else {
-    // perform expensive operation to get data
-    const newData = await getLatestGithubRelease(repo);
-    myCache.set("data", newData);
-    console.log("newData", newData);
-    return newData;
-  }
-}
 
 export default async function TauriTestAppApi(
   req: NextApiRequest,
-  res: NextApiResponse<Release | string>
-): Promise<void> {
-  const params = req.query;
-  const { current_version } = params;
-  const latestRelease = await TestAppApiFetch(App_Repo); // Get latest releases
-
-  if (!latestRelease || !current_version) {
-    return res.status(204).send("NO CONTENT");
-  }
-
-  try {
-    const latestVersion = latestRelease.version;
-
-    if (
-      typeof latestRelease.version === "string" &&
-      typeof current_version === "string"
-    ) {
-      const [latestMax, latestMin, latestPatch] = latestVersion
-        .replace(/^[vV]/, "")
-        .split(".");
-      const [curMax, curMin, curPatch] = current_version
-        .replace(/^[vV]/, "")
-        .split(".");
-
-      if (
-        curMax === latestMax &&
-        curMin === latestMin &&
-        curPatch === latestPatch
-      ) {
-        console.log("UP TO DATE SAME AS LATEST VERSION");
-        throw new Error();
-      }
-    } else {
-      throw new Error("version is not a string");
-    }
-  } catch (e) {
-    return res.status(204).send("NO CONTENT");
-  }
-  return res.json(latestRelease);
+  res: NextApiResponse<any>
+): Promise<any> {
+  // const params = req.query;
+  // const { current_version } = params;
+  const latestRelease = await getGhReleases({ repo: App_Repo, caching: true })); // Get latest releases
+  console.log('latestRelease', latestRelease)
+  return latestRelease
+  
 }
