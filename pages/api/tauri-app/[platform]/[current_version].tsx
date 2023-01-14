@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import NodeCache from "node-cache";
 import Cors from "cors";
-import { getGhReleases } from "tauri-github-releases-test";
+import { getGhReleases } from "tauri-github-releases-test/dist/main";
 
 // import { runMiddleware } from "../../../../utils/middleware";
 
