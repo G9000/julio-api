@@ -14,7 +14,7 @@ specifiers:
   node-cache: ^5.1.2
   react: 18.2.0
   react-dom: 18.2.0
-  tauri-github-releases-test: ^1.0.7
+  tauri-github-releases-test: ^1.0.8
   typescript: 4.9.4
 
 dependencies:
@@ -29,7 +29,7 @@ dependencies:
   node-cache: 5.1.2
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
-  tauri-github-releases-test: 1.0.7
+  tauri-github-releases-test: 1.0.8
   typescript: 4.9.4
 
 devDependencies:
@@ -2077,8 +2077,8 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /tauri-github-releases-test/1.0.7:
-    resolution: {integrity: sha512-CstAt/+kGLVzIuTsACRRk/A4Rm3EZGRTsleTIOTni4u0JZ5L7FrP+II5/UngYeOXEmz1wjvlyeztOR2Vi2ar9Q==}
+  /tauri-github-releases-test/1.0.8:
+    resolution: {integrity: sha512-PQDPQ51Eaff8z+tl3vLI6dDXDAenwlXk14h2aOnGyp3WDQem25HH9aMyHZ47JxYJ5ahSfnlXTTKO/NwvySsHuQ==}
     dependencies:
       node-cache: 5.1.2
       node-fetch: 3.3.0
