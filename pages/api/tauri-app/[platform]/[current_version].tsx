@@ -19,6 +19,6 @@ export default async function TauriTestAppApi(
   const params = req.query;
   const { current_version } = params;
   const latestRelease = await getGhReleases({ repo: App_Repo, caching: true }); // Get latest releases
-  console.log("latestRelease", res.json(latestRelease));
-  return res.json(latestRelease);
+  console.log("latestRelease", latestRelease);
+  return latestRelease;
 }
